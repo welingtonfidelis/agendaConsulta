@@ -1,0 +1,74 @@
+{
+  "medics": [
+    {
+      "id": 1,
+      "name": "João A",
+      "checkIn": "08:00",
+      "checkOut": "18:00"
+    },
+    {
+      "id": 2,
+      "name": "Juliana B",
+      "checkIn": "10:00",
+      "checkOut": "16:00"
+    }
+  ],
+  "consultations": [
+    {
+      "id": 1,
+      "patientName": "Maria Beatriz",
+      "phone": "(35) 9 9999-8888",
+      "date": "2020-04-01 11:00:00",
+      "medicId": 1
+    },
+    {
+      "id": 5,
+      "patientName": "Olga",
+      "phone": "(35) 9 9999-8888",
+      "date": "2020-04-01 10:00:00",
+      "medicId": 2
+    },
+    {
+      "id": 4,
+      "patientName": "Welington",
+      "phone": "(35) 9 9999-8888",
+      "date": "2020-04-15 10:00:00",
+      "medicId": 2
+    },
+    {
+      "id": 2,
+      "patientName": "Marcos Afonso",
+      "phone": "(35) 9 9999-8888",
+      "date": "2020-04-29 10:00:00",
+      "medicId": 1
+    },
+    {
+      "id": 3,
+      "patientName": "Afonso",
+      "phone": "(35) 9 9999-8888",
+      "date": "2020-03-18 15:00:00",
+      "medicId": 2
+    },
+    {
+      "patientName": "teste 1",
+      "phone": "455555665",
+      "date": "2020-04-18 15:00",
+      "medicId": 2,
+      "id": 6
+    },
+    {
+      "patientName": "teste 2",
+      "phone": "33443434",
+      "date": "2020-04-18 13:00",
+      "medicId": 2,
+      "id": 7
+    },
+    {
+      "patientName": "teste 3",
+      "phone": "33343434",
+      "date": "2020-04-18 13:02",
+      "medicId": 1,
+      "id": 8
+    }
+  ]
+}
