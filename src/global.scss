@@ -26,6 +26,7 @@ input, .MuiInputBase-input, textarea {
     padding: 5px 10px 5px 10px;
     flex-grow: 1;
     overflow: auto;
+    height: calc(100vh - 95px);
 }
 
 .flex-row {
@@ -54,4 +55,28 @@ input, .MuiInputBase-input, textarea {
 
 .swal2-container.swal2-center {
     z-index: 9999;
+}
+
+.btn-action {
+    background: #3f51b5 !important;
+    color: #ffff !important;
+}
+
+.makeStyles-paper-111 {
+    border-radius: 8px !important;
+    border: 1.5px solid #3f51b5 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.makeStyles-paper-111 > div {
+
+}
+
+.btn-icon-edit svg{
+    color: #4caf50;
+}
+
+.btn-icon-del svg {
+    color: #f50057;
 }

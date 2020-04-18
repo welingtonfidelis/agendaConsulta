@@ -9,6 +9,8 @@ import { format, addMinutes, subMinutes, isEqual, compareAsc } from 'date-fns';
 import api from '../../services/api';
 import swal from '../../services/swal';
 
+import './styles.scss';
+
 const useStyles = makeStyles((theme) => ({
     modal: {
         display: 'flex',
@@ -23,37 +25,69 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ModalQuery({ showModal, setShowModal, id, saveFunction }) {
+export default function ModalQuery({ showModal, setShowModal, id, reloadListFunction }) {
     const [patientName, setPatientName] = useState('');
     const [phone, setPhone] = useState('');
     const [medicId, setMedicId] = useState(0);
     const [listMedic, setListMedic] = useState([]);
     const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
     const [hour, setHour] = useState(format(new Date(), 'HH:mm'));
+    const [dateTmp, setDateTmp] = useState(null);
     const classes = useStyles();
 
     useEffect(() => {
-        if (id) console.log('temos id', id);
-        else console.log('nao temos id');
+        getListMedics();
 
-        async function getInfo() {
-            try {
-                const query = await api.get('medics');
+        if (id > 0) {
+            getQuery();
+            console.log('temos id', id);
+        }
 
-                console.log(query.data);
-                if (query.data) {
-                    setListMedic(query.data);
-                    setMedicId(query.data[0].id);
-                }
-
-            } catch (error) {
-                console.log(error);
-                swal.swalErrorInform(null, 'Houve um problem ao trazer a lista de médicos. Por favor, tente novamente');
-            }
-        };
-
-        getInfo();
     }, [id]);
+
+    async function getListMedics() {
+        try {
+            const query = await api.get('medics');
+
+            if (query.data) {
+                setListMedic(query.data);
+                setMedicId(query.data[0].id);
+            }
+
+        } catch (error) {
+            console.log(error);
+            swal.swalErrorInform(
+                null,
+                'Houve um problem ao trazer a lista de médicos. Por favor, tente novamente'
+            );
+        }
+    };
+
+    async function getQuery() {
+        try {
+            const query = await api.get(`consultations/${id}`);
+            console.log('detalha', query.data);
+
+            if (query) {
+                const { patientName, phone, date, medicId } = query.data;
+                console.log('data', date.split(' '));
+
+                setPatientName(patientName);
+                setPhone(phone);
+                setDate(format(new Date((date)), 'yyyy-MM-dd'));
+                setDateTmp(format(new Date((date)), 'yyyy-MM-dd HH:mm'));
+                setHour(format(new Date((date)), 'HH:mm'));
+                setMedicId(medicId);
+            }
+
+        } catch (error) {
+            console.log(error);
+            swal.swalErrorInform(
+                null,
+                'Houve um problem ao trazer as informações desta consulta. Por favor, tente novamente'
+            );
+        }
+    }
 
     const handleClose = () => {
         setShowModal(false);
@@ -64,18 +98,27 @@ export default function ModalQuery({ showModal, setShowModal, id, saveFunction }
 
         if (checkHourMedic() && await checkDateQuery()) {
             try {
-                const query = await api.post('consultations', {
+                const data = {
                     patientName,
                     phone,
                     date: format(new Date(`${date} ${hour}`), 'yyyy-MM-dd HH:mm'),
-                    medicId,
-                });
+                    medicId
+                }
+                
+                let query = null;
+                if(id > 0 ) query = await api.put(`consultations/${id}`, data);
+                else query = await api.post('consultations', data);
 
-                if (query.data) {
+                if (query) {
+                    console.log('fecho')
                     swal.swalInform();
                     clearFields();
-                    saveFunction(query.data);
-                    setShowModal(false);
+                    reloadListFunction();
+                    handleClose();
+                }
+                else {
+                    console.log('nao fecho', query);
+                    
                 }
 
             } catch (error) {
@@ -91,21 +134,20 @@ export default function ModalQuery({ showModal, setShowModal, id, saveFunction }
         setMedicId(0);
         setDate(format(new Date(), 'yyyy-MM-dd'));
         setHour(format(new Date(), 'HH:mm'));
+        setDateTmp(null);
     }
 
     const checkHourMedic = () => {
-        console.log('validando medico');
-
         let work = true;
 
         for (const item of listMedic) {
             if (item.id === medicId) {
                 if (compareAsc(
                     new Date(`1990-07-28 ${hour}`),
-                    new Date(`1990-07-28 ${item.checkIn}`)) > 0) {
+                    new Date(`1990-07-28 ${item.checkIn}`)) >= 0) {
                     if (compareAsc(
                         new Date(`1990-07-28 ${item.checkOut}`),
-                        new Date(`1990-07-28 ${hour}`)) > 0) {
+                        new Date(`1990-07-28 ${hour}`)) >= 0) {
                     }
                     else {
                         swal.swalErrorInform(null, `O médico atende até as ${item.checkOut}.`);
@@ -125,8 +167,6 @@ export default function ModalQuery({ showModal, setShowModal, id, saveFunction }
     }
 
     const checkDateQuery = async () => {
-        console.log('validando consulta');
-
         let free = true;
 
         try {
@@ -143,7 +183,10 @@ export default function ModalQuery({ showModal, setShowModal, id, saveFunction }
 
             if (query.data && query.data.length > 0) {
                 for (const el of query.data) {
-                    if (isEqual(new Date(el.date), new Date(dateQuery))) {
+                    console.log(dateTmp, dateQuery, el.date);
+                    
+                    if(!isEqual(new Date(el.date), new Date(dateTmp))
+                        && isEqual(new Date(el.date), new Date(dateQuery))) {
                         free = false;
                         break;
                     }
@@ -184,61 +227,76 @@ export default function ModalQuery({ showModal, setShowModal, id, saveFunction }
                 }}
             >
                 <Fade in={showModal}>
-                    <form onSubmit={handleSubmit} className={classes.paper}>
-                        <TextField
-                            required
-                            value={patientName}
-                            onChange={e => setPatientName(e.target.value)}
-                            id="patientName"
-                            label="Paciente"
-                            variant="outlined"
-                        />
+                    
+                    <form id="form-query" onSubmit={handleSubmit} className={classes.paper}>
+                        <h2>{id > 0 ? "Editar consulta" : "Cadastrar consulta"}</h2>
+                        
+                        <div className="input-space">
+                            <InputLabel id="medicId">Médico</InputLabel>
+                            <Select
+                                required
+                                fullWidth
+                                labelId="medicId"
+                                id="medicId"
+                                value={medicId}
+                                onChange={e => setMedicId(e.target.value)}
+                            >
+                                {listMedic.map(el => (
+                                    <MenuItem key={el.id} value={el.id}>{el.name}</MenuItem>
+                                ))}
+                            </Select>
+                        </div>
 
-                        <TextField
-                            required
-                            value={phone}
-                            onChange={e => setPhone(e.target.value)}
-                            id="phone"
-                            label="Contato"
-                            variant="outlined"
-                            type="number"
-                        />
+                        <div className="input-space flex-row input-date">
+                            <TextField
+                                fullWidth
+                                required
+                                type="date"
+                                id="date"
+                                label="Data"
+                                variant="outlined"
+                                value={date}
+                                onChange={event => setDate(event.target.value)}
+                            />
 
-                        <InputLabel id="medicId">Médico</InputLabel>
-                        <Select
-                            required
-                            labelId="medicId"
-                            id="medicId"
-                            value={medicId}
-                            onChange={e => setMedicId(e.target.value)}
-                        >
-                            {listMedic.map(el => (
-                                <MenuItem key={el.id} value={el.id}>{el.name}</MenuItem>
-                            ))}
-                        </Select>
+                            <TextField
+                                fullWidth
+                                required
+                                type="time"
+                                id="hour"
+                                label="Horário"
+                                variant="outlined"
+                                value={hour}
+                                onChange={event => setHour(event.target.value)}
+                            />
+                        </div>
 
-                        <TextField
-                            // fullWidth
-                            required
-                            type="date"
-                            id="date"
-                            label="Data"
-                            variant="outlined"
-                            value={date}
-                            onChange={event => setDate(event.target.value)}
-                        />
+                        <div className="input-space">
+                            <TextField
+                                required
+                                fullWidth
+                                value={patientName}
+                                onChange={e => setPatientName(e.target.value)}
+                                id="patientName"
+                                label="Paciente"
+                                variant="outlined"
+                            />
+                        </div>
 
-                        <TextField
-                            // fullWidth
-                            required
-                            type="time"
-                            id="hour"
-                            label="Horário"
-                            variant="outlined"
-                            value={hour}
-                            onChange={event => setHour(event.target.value)}
-                        />
-                        <Button type="submit">Salvar</Button>
+                        <div className="input-space">
+                            <TextField
+                                required
+                                fullWidth
+                                value={phone}
+                                onChange={e => setPhone(e.target.value)}
+                                id="phone"
+                                label="Contato"
+                                variant="outlined"
+                                type="number"
+                            />
+                        </div>
+
+                        <Button className="btn-action" type="submit">Salvar</Button>
                     </form>
                 </Fade>
             </Modal>

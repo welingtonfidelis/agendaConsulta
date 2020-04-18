@@ -33,11 +33,13 @@ export default function Main() {
 
   return (
     <>
-      <h2 className="headerTitle">{format(new Date(), 'dd - MMMM - yyyy', { locale: ptBR })}</h2>
-      <BottomNavigation value={value} onChange={handleChange} className="headerNavigation">
-        <BottomNavigationAction label="Consultas" value="query" icon={<Restore />} />
-        <BottomNavigationAction label="Médicos" value="medic" icon={<Favorite />} />
-      </BottomNavigation>
+      <div className="header-main">
+        <h2 className="header-main-title">{format(new Date(), 'dd - MMMM - yyyy', { locale: ptBR })}</h2>
+        <BottomNavigation value={value} onChange={handleChange} className="headerNavigation">
+          <BottomNavigationAction label="Consultas" value="query" icon={<Restore />} />
+          <BottomNavigationAction label="Médicos" value="medic" icon={<Favorite />} />
+        </BottomNavigation>
+      </div>
 
       <div className="container-global">
         <SelectPage />

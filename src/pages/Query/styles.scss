@@ -40,10 +40,14 @@
     margin-right: 10px;
 }
 
-.btn-icon-edit svg{
-    color: #4caf50;
+.header-action {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0 10px 0;
 }
 
-.btn-icon-del svg {
-    color: #f50057;
+.header-action-input {
+    margin-right: 10px !important;
 }
