@@ -4,13 +4,15 @@
       "id": 1,
       "name": "João A",
       "checkIn": "08:00",
-      "checkOut": "18:00"
+      "checkOut": "18:00",
+      "phone": "35219999"
     },
     {
       "id": 2,
       "name": "Juliana B",
       "checkIn": "10:00",
-      "checkOut": "16:00"
+      "checkOut": "16:00",
+      "phone": "211851654"
     }
   ],
   "consultations": [

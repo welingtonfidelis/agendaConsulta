@@ -62,15 +62,17 @@ input, .MuiInputBase-input, textarea {
     color: #ffff !important;
 }
 
-.makeStyles-paper-111 {
+#form-modal {
     border-radius: 8px !important;
     border: 1.5px solid #3f51b5 !important;
     display: flex !important;
     flex-direction: column !important;
 }
 
-.makeStyles-paper-111 > div {
-
+#form-modal h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #3f51b5;
 }
 
 .btn-icon-edit svg{
@@ -79,4 +81,21 @@ input, .MuiInputBase-input, textarea {
 
 .btn-icon-del svg {
     color: #f50057;
+}
+
+.content-text {
+    font-weight: bold;
+}
+
+.content-actions {
+    flex: 0;
+    margin-right: 10px;
+}
+
+.header-action {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0 10px 0;
 }

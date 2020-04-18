@@ -228,7 +228,7 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
             >
                 <Fade in={showModal}>
                     
-                    <form id="form-query" onSubmit={handleSubmit} className={classes.paper}>
+                    <form id="form-modal" onSubmit={handleSubmit} className={classes.paper}>
                         <h2>{id > 0 ? "Editar consulta" : "Cadastrar consulta"}</h2>
                         
                         <div className="input-space">
@@ -290,13 +290,13 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
                                 value={phone}
                                 onChange={e => setPhone(e.target.value)}
                                 id="phone"
-                                label="Contato"
+                                label="Telefone"
                                 variant="outlined"
                                 type="number"
                             />
                         </div>
 
-                        <Button className="btn-action" type="submit">Salvar</Button>
+                        <Button fullWidth className="btn-action" type="submit">Salvar</Button>
                     </form>
                 </Fade>
             </Modal>

@@ -3,7 +3,10 @@ import { format, endOfMonth, startOfMonth } from 'date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import { Delete, Edit } from '@material-ui/icons';
-import { TextField, Button, Select, InputLabel, MenuItem, FormControl } from '@material-ui/core';
+import { 
+    TextField, Button, Select, 
+    InputLabel, MenuItem, FormControl 
+} from '@material-ui/core';
 
 import ModalQuery from '../../components/ModalQuery';
 
@@ -113,7 +116,7 @@ export default function Query() {
     return (
         <>
             <div className="header-action">
-                <div className="header-action-input" style={{ flex: 1 }}>
+                <div className="header-query-action-input" style={{ flex: 1 }}>
                     <TextField
                         fullWidth
                         required
@@ -126,7 +129,7 @@ export default function Query() {
                     />
                 </div>
 
-                <FormControl variant="outlined" className="header-action-input" style={{ flex: 2 }}>
+                <FormControl variant="outlined" className="header-query-action-input" style={{ flex: 2 }}>
                     <InputLabel id="medicId" className={classes.formControl}>Filtrar por médico</InputLabel>
                     <Select
                         required
@@ -151,14 +154,14 @@ export default function Query() {
             {queryList.map(item => {
                 const { medic } = item;
                 return (
-                    <div className="flex-col content" key={item.id}>
+                    <div className="flex-col content-query" key={item.id}>
                         <div className="flex-row">
-                            <div className="flex-col content-date">
+                            <div className="flex-col content-query-date">
                                 <span>{format(new Date(item.date), 'dd/MM/yyyy')}</span>
                                 <span>{format(new Date(item.date), 'hh:mm')}</span>
                             </div>
 
-                            <div className="flex-col content-info">
+                            <div className="flex-col content-query-info">
                                 <span>
                                     Paciente: <span className="content-text">{item.patientName}</span>
                                     &nbsp;
