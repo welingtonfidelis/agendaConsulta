@@ -1,21 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BottomNavigation, BottomNavigationAction } from '@material-ui/core';
-import { Restore, Favorite, AssignmentInd } from '@material-ui/icons';
+import { Restore, AssignmentInd, CalendarToday } from '@material-ui/icons';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-import Query from '../Query';
+import Query from '../QueryList';
 import Medic from '../Medic';
+import QueryCalendar from '../QueryCalendar';
 
 import './styles.scss';
 
 export default function Main() {
-  const [value, setValue] = React.useState('query');
+  const [value, setValue] = React.useState('queryCalendar');
 
   const SelectPage = () => {
-    let page = <Query />
+    let page = <QueryCalendar />
 
     switch (value) {
+      case 'query':
+        page = <Query />
+        break;
+
       case 'medic':
         page = <Medic />
         break;
@@ -37,6 +42,7 @@ export default function Main() {
         <h2 className="header-main-title">{format(new Date(), 'dd - MMMM - yyyy', { locale: ptBR })}</h2>
         <BottomNavigation value={value} onChange={handleChange} className="headerNavigation">
           <BottomNavigationAction label="Consultas" value="query" icon={<Restore />} />
+          <BottomNavigationAction label="Calendário" value="queryCalendar" icon={<CalendarToday />} />
           <BottomNavigationAction label="Médicos" value="medic" icon={<AssignmentInd />} />
         </BottomNavigation>
       </div>

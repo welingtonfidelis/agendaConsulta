@@ -6,6 +6,8 @@ import {
 } from '@material-ui/core';
 import { format, addMinutes, subMinutes, isEqual, compareAsc } from 'date-fns';
 
+import Load from '../Load';
+
 import api from '../../services/api';
 import swal from '../../services/swal';
 
@@ -33,6 +35,7 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
     const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
     const [hour, setHour] = useState(format(new Date(), 'HH:mm'));
     const [dateTmp, setDateTmp] = useState(null);
+    const [loading, setLoading] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
@@ -41,10 +44,12 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
         if (id > 0) {
             getQuery();
         }
+        else clearFields();
 
     }, [id]);
 
     async function getListMedics() {
+        setLoading(true);
         try {
             const query = await api.get('medics');
 
@@ -60,9 +65,11 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
                 'Houve um problem ao trazer a lista de médicos. Por favor, tente novamente'
             );
         }
+        setLoading(false);
     };
 
     async function getQuery() {
+        setLoading(true);
         try {
             const query = await api.get(`consultations/${id}`);
 
@@ -85,6 +92,7 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
                 'Houve um problem ao trazer as informações desta consulta. Por favor, tente novamente'
             );
         }
+        setLoading(false);
     }
 
     function handleClose() {
@@ -95,6 +103,7 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
         event.preventDefault();
 
         if (checkHourMedic() && await checkDateQuery()) {
+            setLoading(true);
             try {
                 const data = {
                     patientName,
@@ -118,6 +127,7 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
                 console.log(error);
                 swal.swalErrorInform();
             }
+            setLoading(false);
         }
     }
 
@@ -222,6 +232,7 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
                 <Fade in={showModal}>
 
                     <form id="form-modal" onSubmit={handleSubmit} className={classes.paper}>
+                        <Load id="divLoading" loading={loading} />
                         <h2>{id > 0 ? "Editar consulta" : "Cadastrar consulta"}</h2>
 
                         <div className="input-space">

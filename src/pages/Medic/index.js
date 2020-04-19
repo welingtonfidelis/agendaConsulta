@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { format, endOfMonth, startOfMonth } from 'date-fns';
-import { makeStyles } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import { Delete, Edit } from '@material-ui/icons';
-import {
-    TextField, Button, Select,
-    InputLabel, MenuItem, FormControl
-} from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 
 import ModalMedic from '../../components/ModalMedic';
+
+import Load from '../../components/Load';
 
 import api from '../../services/api';
 import swal from '../../services/swal';
@@ -22,6 +19,7 @@ export default function Medic() {
     const [medicListFull, setMedicListFull] = useState([]);
     const [filter, setFilter] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [medicEditId, setMedicEditId] = useState(0);
 
     useEffect(() => {
@@ -30,6 +28,7 @@ export default function Medic() {
     }, []);
 
     async function getListMedics() {
+        setLoading(true);
         try {
             const query = await api.get('medics?_sort=name&_order=asc');
 
@@ -42,6 +41,7 @@ export default function Medic() {
             console.log(error);
             swal.swalErrorInform(null, 'Houve um problema ao trazer a lista de médicos.');
         }
+        setLoading(false);
     }
 
     function handleEditMedic(id) {
@@ -58,6 +58,7 @@ export default function Medic() {
         const resp = await swal.swalConfirm(null, 'Gostaria de excluir este médico?');
 
         if (resp) {
+            setLoading(true);
             try {
                 const query = await api.delete(`medics/${id}`);
 
@@ -70,7 +71,7 @@ export default function Medic() {
                 console.log(error);
                 swal.swalErrorInform(null, 'Houve um problema ao excluir o médico.');
             }
-
+            setLoading(false);
         }
     }
 
@@ -92,6 +93,7 @@ export default function Medic() {
 
     return (
         <>
+            <Load id="divLoading" loading={loading} />
             <div className="header-medic-content">
                 <div className="header-action-search" style={{ flex: 2 }}>
                     <TextField

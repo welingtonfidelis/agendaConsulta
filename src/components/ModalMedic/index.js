@@ -8,6 +8,8 @@ import { format } from 'date-fns';
 import api from '../../services/api';
 import swal from '../../services/swal';
 
+import Load from '../Load';
+
 import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
@@ -30,12 +32,14 @@ export default function ModalMedic({ showModal, setShowModal, id, reloadListFunc
     const [checkIn, setCheckIn] = useState(format(new Date(), 'HH:mm'));
     const [checkOut, setCheckOut] = useState(format(new Date(), 'HH:mm'));
     const [nameTmp, setNameTmp] = useState('');
+    const [loading, setLoading] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
         if (id > 0) {
             getMedic();
         }
+        else clearFields();
 
     }, [id]);
 
@@ -44,10 +48,10 @@ export default function ModalMedic({ showModal, setShowModal, id, reloadListFunc
     };
 
     async function getMedic() {
+        setLoading(true);
         try {
             const query = await api.get(`medics/${id}`);
-            console.log('detalha', query.data);
-
+ 
             if (query) {
                 const { name, phone, checkIn, checkOut } = query.data;
 
@@ -65,12 +69,14 @@ export default function ModalMedic({ showModal, setShowModal, id, reloadListFunc
                 'Houve um problem ao trazer as informações deste médico. Por favor, tente novamente'
             );
         }
+        setLoading(false);
     }
 
     async function handleSubmit(event) {
         event.preventDefault();
 
         if (await checkNameMedic()) {
+            setLoading(true);
             try {
                 const data = {
                     name,
@@ -94,6 +100,7 @@ export default function ModalMedic({ showModal, setShowModal, id, reloadListFunc
                 console.log(error);
                 swal.swalErrorInform();
             }
+            setLoading(false);
         }
     }
 
@@ -142,8 +149,8 @@ export default function ModalMedic({ showModal, setShowModal, id, reloadListFunc
                 }}
             >
                 <Fade in={showModal}>
-
                     <form id="form-modal" onSubmit={handleSubmit} className={classes.paper}>
+                        <Load id="divLoading" loading={loading} />
                         <h2>{id > 0 ? "Editar médico" : "Cadastrar médico"}</h2>
 
                         <div className="input-space flex-row input-date">

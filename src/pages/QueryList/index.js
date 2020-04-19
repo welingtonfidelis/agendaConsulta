@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 
 import ModalQuery from '../../components/ModalQuery';
+import Load from '../../components/Load';
 
 import api from '../../services/api';
 import swal from '../../services/swal';
@@ -33,6 +34,7 @@ export default function Query() {
     const [medicId, setMedicId] = useState(0);
     const [dateStart, setDateStart] = useState(startOfMonth(new Date()));
     const [dateEnd, setDateEnd] = useState(endOfMonth(new Date()));
+    const [loading, setLoading] = useState(false);
     const classes = useStyles();
 
     useEffect(() => {
@@ -46,6 +48,8 @@ export default function Query() {
     }, [dateStart, dateEnd, medicId]);
 
     async function getListQuery() {
+        setLoading(true);
+
         try {
             setQueryEditId(0);
             const query = await api.get(
@@ -64,9 +68,13 @@ export default function Query() {
             console.log(error);
             swal.swalErrorInform(null, 'Houve um problema ao trazer a agenda de consultas.');
         }
+
+        setLoading(false);
     };
 
     async function getListMedics() {
+        setLoading(true);
+
         try {
             const query = await api.get('medics');
 
@@ -81,6 +89,8 @@ export default function Query() {
                 'Houve um problem ao trazer a lista de médicos. Por favor, tente novamente'
             );
         }
+
+        setLoading(false);
     };
 
     function handleEditQuery(id) {
@@ -97,6 +107,7 @@ export default function Query() {
         const resp = await swal.swalConfirm(null, 'Gostaria de excluir esta consulta?');
 
         if (resp) {
+            setLoading(true);
             try {
                 const query = await api.delete(`consultations/${id}`);
 
@@ -109,12 +120,13 @@ export default function Query() {
                 console.log(error);
                 swal.swalErrorInform(null, 'Houve um problema ao excluir a consulta.');
             }
-
+            setLoading(false);
         }
     }
 
     return (
         <>
+            <Load id="divLoading" loading={loading} />
             <div className="header-action header-query-action">
                 <div className="header-query-content">
                     <TextField
@@ -158,10 +170,10 @@ export default function Query() {
                         </Select>
                     </FormControl>
 
-                    <Button 
-                        fullWidth 
-                        className="btn-action" 
-                        style={{ flex: 1 }} 
+                    <Button
+                        fullWidth
+                        className="btn-action"
+                        style={{ flex: 1 }}
                         onClick={handleNewQuery}
                     >
                         Novo
