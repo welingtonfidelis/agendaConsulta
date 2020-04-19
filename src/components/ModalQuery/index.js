@@ -40,7 +40,6 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
 
         if (id > 0) {
             getQuery();
-            console.log('temos id', id);
         }
 
     }, [id]);
@@ -66,7 +65,6 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
     async function getQuery() {
         try {
             const query = await api.get(`consultations/${id}`);
-            console.log('detalha', query.data);
 
             if (query) {
                 const { patientName, phone, date, medicId } = query.data;
@@ -89,11 +87,11 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
         }
     }
 
-    const handleClose = () => {
+    function handleClose() {
         setShowModal(false);
     };
 
-    const handleSubmit = async (event) => {
+    async function handleSubmit(event) {
         event.preventDefault();
 
         if (checkHourMedic() && await checkDateQuery()) {
@@ -104,21 +102,16 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
                     date: format(new Date(`${date} ${hour}`), 'yyyy-MM-dd HH:mm'),
                     medicId
                 }
-                
+
                 let query = null;
-                if(id > 0 ) query = await api.put(`consultations/${id}`, data);
+                if (id > 0) query = await api.put(`consultations/${id}`, data);
                 else query = await api.post('consultations', data);
 
                 if (query) {
-                    console.log('fecho')
                     swal.swalInform();
                     clearFields();
                     reloadListFunction();
                     handleClose();
-                }
-                else {
-                    console.log('nao fecho', query);
-                    
                 }
 
             } catch (error) {
@@ -128,7 +121,7 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
         }
     }
 
-    const clearFields = () => {
+    function clearFields() {
         setPatientName('');
         setPhone('');
         setMedicId(0);
@@ -137,7 +130,7 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
         setDateTmp(null);
     }
 
-    const checkHourMedic = () => {
+    function checkHourMedic() {
         let work = true;
 
         for (const item of listMedic) {
@@ -166,7 +159,7 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
         return work;
     }
 
-    const checkDateQuery = async () => {
+    async function checkDateQuery() {
         let free = true;
 
         try {
@@ -184,8 +177,8 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
             if (query.data && query.data.length > 0) {
                 for (const el of query.data) {
                     console.log(dateTmp, dateQuery, el.date);
-                    
-                    if(!isEqual(new Date(el.date), new Date(dateTmp))
+
+                    if (!isEqual(new Date(el.date), new Date(dateTmp))
                         && isEqual(new Date(el.date), new Date(dateQuery))) {
                         free = false;
                         break;
@@ -227,10 +220,10 @@ export default function ModalQuery({ showModal, setShowModal, id, reloadListFunc
                 }}
             >
                 <Fade in={showModal}>
-                    
+
                     <form id="form-modal" onSubmit={handleSubmit} className={classes.paper}>
                         <h2>{id > 0 ? "Editar consulta" : "Cadastrar consulta"}</h2>
-                        
+
                         <div className="input-space">
                             <InputLabel id="medicId">Médico</InputLabel>
                             <Select

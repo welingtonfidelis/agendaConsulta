@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-    Modal, Backdrop, Fade, TextField,
-    Button, Select, InputLabel, MenuItem
+    Modal, Backdrop, Fade, TextField, Button
 } from '@material-ui/core';
-import { format, addMinutes, subMinutes, isEqual, compareAsc } from 'date-fns';
+import { format } from 'date-fns';
 
 import api from '../../services/api';
 import swal from '../../services/swal';
@@ -28,59 +27,77 @@ const useStyles = makeStyles((theme) => ({
 export default function ModalMedic({ showModal, setShowModal, id, reloadListFunction }) {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
-    const [checkiIn, setCheckIn] = useState(format(new Date(), 'HH:mm'));
-    const [checkiOut, setCheckOut] = useState(format(new Date(), 'HH:mm'));
+    const [checkIn, setCheckIn] = useState(format(new Date(), 'HH:mm'));
+    const [checkOut, setCheckOut] = useState(format(new Date(), 'HH:mm'));
     const [nameTmp, setNameTmp] = useState('');
     const classes = useStyles();
 
     useEffect(() => {
         if (id > 0) {
-            console.log('temos id', id);
+            getMedic();
         }
 
     }, [id]);
 
-    const handleClose = () => {
+    function handleClose() {
         setShowModal(false);
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    async function getMedic() {
+        try {
+            const query = await api.get(`medics/${id}`);
+            console.log('detalha', query.data);
 
+            if (query) {
+                const { name, phone, checkIn, checkOut } = query.data;
 
-        // if (checkHourMedic() && await checkDateQuery()) {
-        //     try {
-        //         const data = {
-        //             patientName,
-        //             phone,
-        //             date: format(new Date(`${date} ${hour}`), 'yyyy-MM-dd HH:mm'),
-        //             medicId
-        //         }
+                setName(name);
+                setNameTmp(name);
+                setPhone(phone);
+                setCheckIn(format(new Date(`1990-07-28 ${checkIn}`), 'HH:mm'));
+                setCheckOut(format(new Date(`1990-07-28 ${checkOut}`), 'HH:mm'));
+            }
 
-        //         let query = null;
-        //         if(id > 0 ) query = await api.put(`consultations/${id}`, data);
-        //         else query = await api.post('consultations', data);
-
-        //         if (query) {
-        //             console.log('fecho')
-        //             swal.swalInform();
-        //             clearFields();
-        //             reloadListFunction();
-        //             handleClose();
-        //         }
-        //         else {
-        //             console.log('nao fecho', query);
-
-        //         }
-
-        //     } catch (error) {
-        //         console.log(error);
-        //         swal.swalErrorInform();
-        //     }
-        // }
+        } catch (error) {
+            console.log(error);
+            swal.swalErrorInform(
+                null,
+                'Houve um problem ao trazer as informações deste médico. Por favor, tente novamente'
+            );
+        }
     }
 
-    const clearFields = () => {
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        if (await checkNameMedic()) {
+            try {
+                const data = {
+                    name,
+                    phone,
+                    checkIn,
+                    checkOut
+                }
+
+                let query = null;
+                if (id > 0) query = await api.put(`medics/${id}`, data);
+                else query = await api.post('medics', data);
+
+                if (query) {
+                    swal.swalInform();
+                    clearFields();
+                    reloadListFunction();
+                    handleClose();
+                }
+
+            } catch (error) {
+                console.log(error);
+                swal.swalErrorInform();
+            }
+        }
+    }
+
+    function clearFields() {
         setName('');
         setPhone('');
         setCheckIn(format(new Date(), 'HH:mm'));
@@ -88,10 +105,24 @@ export default function ModalMedic({ showModal, setShowModal, id, reloadListFunc
         setNameTmp(null);
     }
 
-    const checkNameMedic = () => {
+    async function checkNameMedic() {
         let work = true;
 
+        if (name !== nameTmp) {
+            try {
+                const query = await api.get(`medics?name_like=${name}`);
 
+                if (query.data.length > 0) {
+                    work = false;
+                    swal.swalErrorInform(null, 'Este nome já está sendo utilizado. Por favor, use outro nome');
+                }
+
+            } catch (error) {
+                console.log(error);
+                work = false;
+                swal.swalErrorInform();
+            }
+        }
 
         return work;
     }
@@ -148,7 +179,7 @@ export default function ModalMedic({ showModal, setShowModal, id, reloadListFunc
                                 id="checkin"
                                 label="Entrada"
                                 variant="outlined"
-                                value={checkiIn}
+                                value={checkIn}
                                 onChange={event => setCheckIn(event.target.value)}
                             />
 
@@ -159,7 +190,7 @@ export default function ModalMedic({ showModal, setShowModal, id, reloadListFunc
                                 id="checkout"
                                 label="Saída"
                                 variant="outlined"
-                                value={checkiOut}
+                                value={checkOut}
                                 onChange={event => setCheckOut(event.target.value)}
                             />
                         </div>

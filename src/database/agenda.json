@@ -1,11 +1,11 @@
 {
   "medics": [
     {
-      "id": 1,
       "name": "João A",
+      "phone": "35219999",
       "checkIn": "08:00",
-      "checkOut": "18:00",
-      "phone": "35219999"
+      "checkOut": "18:21",
+      "id": 1
     },
     {
       "id": 2,
@@ -13,6 +13,20 @@
       "checkIn": "10:00",
       "checkOut": "16:00",
       "phone": "211851654"
+    },
+    {
+      "name": "João A",
+      "phone": "3333",
+      "checkIn": "08:00",
+      "checkOut": "12:00",
+      "id": 3
+    },
+    {
+      "name": "João Aa",
+      "phone": "333",
+      "checkIn": "10:00",
+      "checkOut": "16:00",
+      "id": 7
     }
   ],
   "consultations": [
@@ -26,7 +40,7 @@
     {
       "patientName": "Olga",
       "phone": "888351987",
-      "date": "2020-04-01 10:01",
+      "date": "2020-04-01 11:00",
       "medicId": 2,
       "id": 5
     },

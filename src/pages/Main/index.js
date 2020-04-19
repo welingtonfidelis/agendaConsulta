@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BottomNavigation, BottomNavigationAction } from '@material-ui/core';
-import { Restore, Favorite } from '@material-ui/icons';
+import { Restore, Favorite, AssignmentInd } from '@material-ui/icons';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -37,7 +37,7 @@ export default function Main() {
         <h2 className="header-main-title">{format(new Date(), 'dd - MMMM - yyyy', { locale: ptBR })}</h2>
         <BottomNavigation value={value} onChange={handleChange} className="headerNavigation">
           <BottomNavigationAction label="Consultas" value="query" icon={<Restore />} />
-          <BottomNavigationAction label="Médicos" value="medic" icon={<Favorite />} />
+          <BottomNavigationAction label="Médicos" value="medic" icon={<AssignmentInd />} />
         </BottomNavigation>
       </div>
 

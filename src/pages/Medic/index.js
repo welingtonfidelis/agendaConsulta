@@ -31,7 +31,7 @@ export default function Medic() {
 
     async function getListMedics() {
         try {
-            const query = await api.get('medics');
+            const query = await api.get('medics?_sort=name&_order=asc');
 
             if (query) {
                 setMedicList(query.data);
@@ -138,7 +138,7 @@ export default function Medic() {
                             >
                                 <Edit />
                             </IconButton>
-                            
+
                             <IconButton
                                 onClick={() => handleDeleteMedic(item.id)}
                                 title="Deletar"
