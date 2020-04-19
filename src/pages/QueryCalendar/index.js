@@ -128,8 +128,8 @@ export default function QueryCalendar() {
                 `<div class="td-card">
                     <strong>${(i + '').padStart(2, '0')}</strong>
                     ${query}
-                </div>
-                `
+                </div>`
+
             if (format(day, 'EEEE', { locale: ptBR }) === 'sábado') {
                 bodyTmp +=
                         `<td>

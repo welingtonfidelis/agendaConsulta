@@ -95,7 +95,7 @@ export default function Medic() {
         <>
             <Load id="divLoading" loading={loading} />
             <div className="header-medic-content">
-                <div className="header-action-search" style={{ flex: 2 }}>
+                <div className="header-action-search">
                     <TextField
                         required
                         fullWidth
