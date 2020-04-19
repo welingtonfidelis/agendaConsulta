@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { format, endOfMonth, startOfMonth } from 'date-fns';
+import { format, endOfMonth, startOfMonth, addDays } from 'date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import { Delete, Edit } from '@material-ui/icons';
-import { 
-    TextField, Button, Select, 
-    InputLabel, MenuItem, FormControl 
+import {
+    TextField, Button, Select,
+    InputLabel, MenuItem, FormControl
 } from '@material-ui/core';
 
 import ModalQuery from '../../components/ModalQuery';
@@ -31,7 +31,8 @@ export default function Query() {
     const [showModal, setShowModal] = useState(false);
     const [queryEditId, setQueryEditId] = useState(0);
     const [medicId, setMedicId] = useState(0);
-    const [today, setToday] = useState(new Date());
+    const [dateStart, setDateStart] = useState(startOfMonth(new Date()));
+    const [dateEnd, setDateEnd] = useState(endOfMonth(new Date()));
     const classes = useStyles();
 
     useEffect(() => {
@@ -42,12 +43,11 @@ export default function Query() {
     useEffect(() => {
         getListQuery();
 
-    }, [today, medicId]);
+    }, [dateStart, dateEnd, medicId]);
 
     async function getListQuery() {
         try {
             setQueryEditId(0);
-            const dateStart = startOfMonth(today), dateEnd = endOfMonth(today);
             const query = await api.get(
                 `consultations` +
                 `?date_gte=${format(dateStart, 'yyyy-MM-dd')}` +
@@ -115,39 +115,57 @@ export default function Query() {
 
     return (
         <>
-            <div className="header-action">
-                <div className="header-query-action-input" style={{ flex: 1 }}>
+            <div className="header-action header-query-action">
+                <div className="header-query-content">
                     <TextField
                         fullWidth
                         required
                         type="date"
-                        id="today"
-                        label="Filtrar por mês"
+                        id="dateStart"
+                        label="Data inicial"
                         variant="outlined"
-                        value={format(today, 'yyyy-MM-dd')}
-                        onChange={event => setToday(new Date(event.target.value))}
+                        value={format(dateStart, 'yyyy-MM-dd')}
+                        onChange={event => setDateStart(addDays(new Date(event.target.value), 1))}
+                    />
+
+                    <TextField
+                        fullWidth
+                        required
+                        type="date"
+                        id="dateEnd"
+                        label="Data final"
+                        variant="outlined"
+                        value={format(dateEnd, 'yyyy-MM-dd')}
+                        onChange={event => setDateEnd(addDays(new Date(event.target.value), 1))}
                     />
                 </div>
 
-                <FormControl variant="outlined" className="header-query-action-input" style={{ flex: 2 }}>
-                    <InputLabel id="medicId" className={classes.formControl}>Filtrar por médico</InputLabel>
-                    <Select
-                        required
-                        fullWidth
-                        labelId="Medico"
-                        id="medicId"
-                        value={medicId}
-                        onChange={e => setMedicId(e.target.value)}
-                    >
-                        <MenuItem value={0}>Todos</MenuItem>
-                        {medicList.map(el => (
-                            <MenuItem key={el.id} value={el.id}>{el.name}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                <div className="header-query-content">
+                    <FormControl variant="outlined" style={{ flex: 2 }}>
+                        <InputLabel id="medicId" className={classes.formControl}>Filtrar por médico</InputLabel>
+                        <Select
+                            required
+                            fullWidth
+                            labelId="Medico"
+                            id="medicId"
+                            value={medicId}
+                            onChange={e => setMedicId(e.target.value)}
+                        >
+                            <MenuItem value={0}>Todos</MenuItem>
+                            {medicList.map(el => (
+                                <MenuItem key={el.id} value={el.id}>{el.name}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
 
-                <div style={{ flex: 0 }}>
-                    <Button className="btn-action" onClick={handleNewQuery}>Novo</Button>
+                    <Button 
+                        fullWidth 
+                        className="btn-action" 
+                        style={{ flex: 1 }} 
+                        onClick={handleNewQuery}
+                    >
+                        Novo
+                    </Button>
                 </div>
             </div>
 

@@ -1,5 +1,26 @@
-.header-query-action-input {
-    margin-right: 10px !important;
+// .header-query-action-input {
+//     margin-right: 10px !important;
+// }
+.header-query-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.header-query-content > div {
+    margin-right: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+    .header-query-action {
+      flex-direction: column !important;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .header-query-content {
+        margin-bottom: 5px;
+    }
 }
 
 .just-center {

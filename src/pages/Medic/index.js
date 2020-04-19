@@ -92,8 +92,8 @@ export default function Medic() {
 
     return (
         <>
-            <div className="header-action">
-                <div className="header-action-search">
+            <div className="header-medic-content">
+                <div className="header-action-search" style={{ flex: 2 }}>
                     <TextField
                         required
                         fullWidth
@@ -105,9 +105,7 @@ export default function Medic() {
                     />
                 </div>
 
-                <div >
-                    <Button className="btn-action" onClick={handleNewMedic}>Novo</Button>
-                </div>
+                <Button fullWidth className="btn-action" style={{ flex: 1 }} onClick={handleNewMedic}>Novo</Button>
             </div>
 
             {medicList.map(item => {
