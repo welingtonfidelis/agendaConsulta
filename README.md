@@ -1,4 +1,4 @@
-# control-payment-front
+# agendaConsulta
 
 Este projeto foi construído com objetivo de atender necessidades de consultórios médicos em controlar agenda de consultas aos pacientes. Através deste sistema simplificado, é possível cadastrar médicos e consultas, com controle de intervalo de tempo entre as consultas, incluindo não permitir consultas em mesma data e horário. O foco do projeto foi na construção do front utilizando React, por tanto, não houve a construção de um backend (API REST). Sendo assim, a biblioteca [JSON server] foi utilizada para gerar uma API REST com base em arquivo json (contido dentro da pasta src/database).
 
