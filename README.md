@@ -9,7 +9,7 @@ Este projeto foi construído com objetivo de atender necessidades de consultóri
 
 ### Instalação
 
-Clonar este projeto, rodar o comando npm install ou yarn install para que sejam baixadas as dependências necessárias. Para "subir" o servidor, execute o comando npm run server ou yarn server, em seguida receberá a mensagem "Type s + enter at any time to create a snapshot of the database Watching...". Para abrir o sistema, execute o comando npm start ou yarn start, em seguida o sistema abrirá em uma nova aba de seu navegador padrão.
+Clonar este projeto, rodar o comando npm install ou yarn install para que sejam baixadas as dependências necessárias. Para executar o "servidor" e o sistema, execute o comando "npm run start" ou "yarn start". Confirma se em seu terminal contém a mensagem "Type s + enter at any time to create a snapshot of the database Watching..." (mensagem do JSON SERVER). Automaticamnete, o sistema será carregado em seu navegador padrão. Pronto, você já deve estar com tudo funcionando.
 
 ### Contato
 welingtonfidelis@gmail.com
