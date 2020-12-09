@@ -13,7 +13,7 @@ Clonar este projeto, rodar o comando npm install ou yarn install para que sejam 
 
 ### Contato
 welingtonfidelis@gmail.com
-Sujestões e pull requests são sempre bem vindos =) 
+Sugestões e pull requests são sempre bem vindos =) 
 
 License
 ----
